@@ -32,3 +32,6 @@ custom_plan.rb
 
 # Vim swap files
 **/*.swp
+
+# Screenshot files
+screenshot_*.html
