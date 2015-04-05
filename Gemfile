@@ -5,7 +5,7 @@ ruby '2.1.5'
 gem 'dotenv-rails', groups: [:development, :test]
 
 gem 'rails', '4.2.1'
-gem 'devise', '~> 3.4.0'
+gem 'devise'
 gem 'thin'
 gem 'jquery-rails'
 gem 'nested_form'
@@ -64,7 +64,7 @@ end
 group :test do
   gem 'webmock'
   gem "factory_girl_rails"
-  gem 'capybara', '>= 2.0.1'
+  gem 'capybara'
   gem "poltergeist"
   gem "launchy"
   gem 'shoulda-matchers'
