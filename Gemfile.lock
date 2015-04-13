@@ -82,7 +82,7 @@ GEM
     coffee-script (2.4.1)
       coffee-script-source
       execjs
-    coffee-script-source (1.9.1)
+    coffee-script-source (1.9.1.1)
     compass (1.0.3)
       chunky_png (~> 1.2)
       compass-core (~> 1.0.2)
@@ -415,6 +415,7 @@ DEPENDENCIES
   sentry-raven
   shoulda-matchers
   simple_form
+  sprockets (= 2.12.3)
   sqlite3
   test_after_commit
   thin

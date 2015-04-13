@@ -4,6 +4,8 @@ ruby '2.2.1'
 
 gem 'dotenv-rails', groups: [:development, :test]
 
+gem 'sprockets', '2.12.3' # 4/13/2015: LOCKED OUT
+
 gem 'rails', '4.2.1'
 gem 'devise'
 gem 'thin'
