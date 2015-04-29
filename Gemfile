@@ -24,6 +24,7 @@ gem 'gravatar_image_tag'
 gem 'simple_form'
 gem 'rack-canonical-host'
 gem 'icalendar'
+gem 'overcommit'
 
 group :production do
   gem 'pg'
@@ -48,10 +49,10 @@ gem 'masonry-rails'
 group :development do
   gem 'quiet_assets'
   gem 'rb-fsevent'
-  gem "bullet"
-  gem "heroku_san"
-  gem "better_errors"
-  gem "binding_of_caller"
+  gem 'bullet'
+  gem 'heroku_san'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 group :test, :development do
@@ -65,12 +66,12 @@ end
 
 group :test do
   gem 'webmock'
-  gem "factory_girl_rails"
+  gem 'factory_girl_rails'
   gem 'capybara'
-  gem "poltergeist"
-  gem "launchy"
+  gem 'poltergeist'
+  gem 'launchy'
   gem 'shoulda-matchers'
-  gem "faker"
+  gem 'faker'
   gem 'capybara-screenshot'
   # Remove after Rails 5: https://github.com/rails/rails/pull/18458
   gem 'test_after_commit'

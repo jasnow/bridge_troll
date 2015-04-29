@@ -73,6 +73,8 @@ GEM
     capybara-screenshot (1.0.9)
       capybara (>= 1.0, < 3)
       launchy
+    childprocess (0.5.6)
+      ffi (~> 1.0, >= 1.0.11)
     chunky_png (1.3.4)
     cliver (0.3.2)
     coderay (1.1.0)
@@ -162,12 +164,13 @@ GEM
     hike (1.2.3)
     i18n (0.7.0)
     icalendar (2.3.0)
-    jasmine (2.2.0)
-      jasmine-core (~> 2.2)
+    iniparse (1.4.0)
+    jasmine (2.3.0)
+      jasmine-core (~> 2.3)
       phantomjs
       rack (>= 1.2.1)
       rake
-    jasmine-core (2.2.0)
+    jasmine-core (2.3.0)
     jasmine-jquery-rails (2.0.3)
     jquery-datatables-rails (3.2.0)
       actionpack (>= 3.1)
@@ -230,6 +233,9 @@ GEM
       json (~> 1.3)
       omniauth-oauth (~> 1.1)
     orm_adapter (0.5.0)
+    overcommit (0.24.0)
+      childprocess (~> 0.5.6)
+      iniparse (~> 1.4)
     pg (0.18.1)
     phantomjs (1.9.8.0)
     poltergeist (1.6.0)
@@ -397,6 +403,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-meetup
   omniauth-twitter
+  overcommit
   pg
   poltergeist
   quiet_assets
