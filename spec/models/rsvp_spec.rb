@@ -39,7 +39,7 @@ describe Rsvp do
 
     it "should only require class_level if teaching or TAing" do
       subject.class_level.should be_nil
-      subject.should be_valid
+      subject.should have(0).errors_on(:class_level)
 
       subject.teaching = true
       subject.should have(1).errors_on(:class_level)
@@ -85,13 +85,7 @@ describe Rsvp do
         end
       end
       let(:rsvp) do
-        build(:rsvp, event: event).tap do |rsvp|
-          rsvp.rsvp_sessions.build(event_session: event_session)
-          rsvp.save!
-        end
-      end
-      before do
-        rsvp.rsvp_sessions.first.update_attributes(checked_in: checked_in)
+        create(:rsvp, event: event, session_checkins: {event_session.id => checked_in})
       end
 
       context 'when the user has checked in' do
@@ -149,6 +143,14 @@ describe Rsvp do
 
       it "returns all sessions" do
         rsvp.selectable_sessions.pluck(:id).should =~ [@session_no_options.id, @session_required_for_students.id, @session_volunteers_only.id]
+      end
+    end
+
+    describe "for organizers" do
+      let(:rsvp) { create(:organizer_rsvp, event: event) }
+
+      it "raises an error" do
+        expect { rsvp.selectable_sessions }.to raise_error
       end
     end
   end

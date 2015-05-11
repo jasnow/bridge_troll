@@ -14,7 +14,7 @@ describe SectionArranger do
   end
   
   def calculate_arrangement(event)
-    arrangement = Hash.new { |hsh, key| hsh[key] = []; hsh[key] }
+    arrangement = Hash.new { |hsh, key| hsh[key] = [] }
     event.sections.each do |section|
       arrangement[section.class_level] << {
         students: section.student_rsvps.count,
@@ -116,21 +116,13 @@ describe SectionArranger do
 
         @session1, @session2 = @event.event_sessions.to_a
 
-        @session1_rsvp = create(:student_rsvp, event: @event)
-        create(:rsvp_session, rsvp: @session1_rsvp, event_session: @session1, checked_in: true)
-        create(:rsvp_session, rsvp: @session1_rsvp, event_session: @session2, checked_in: false)
+        @session1_rsvp = create(:student_rsvp, event: @event, session_checkins: {@session1.id => true, @session2.id => false})
 
-        @session2_rsvp = create(:student_rsvp, event: @event)
-        create(:rsvp_session, rsvp: @session2_rsvp, event_session: @session1, checked_in: false)
-        create(:rsvp_session, rsvp: @session2_rsvp, event_session: @session2, checked_in: true)
+        @session2_rsvp = create(:student_rsvp, event: @event, session_checkins: {@session1.id => false, @session2.id => true})
 
-        @both_rsvp = create(:student_rsvp, event: @event)
-        create(:rsvp_session, rsvp: @both_rsvp, event_session: @session1, checked_in: true)
-        create(:rsvp_session, rsvp: @both_rsvp, event_session: @session2, checked_in: true)
+        @both_rsvp = create(:student_rsvp, event: @event, session_checkins: {@session1.id => true, @session2.id => true})
 
-        @neither_attendee = create(:student_rsvp, event: @event)
-        create(:rsvp_session, rsvp: @neither_attendee, event_session: @session1, checked_in: false)
-        create(:rsvp_session, rsvp: @neither_attendee, event_session: @session2, checked_in: false)
+        @neither_attendee = create(:student_rsvp, event: @event, session_checkins: {@session1.id => false, @session2.id => false})
       end
 
       context "when asked to arrange for only the first session" do

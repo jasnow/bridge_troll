@@ -1,5 +1,20 @@
 <%= content_for(:header_text, @event.title) %>
 
+<% if @organizer || @checkiner %>
+  <div class="organizer-breadcrumb">
+    You are <%= @organizer ? 'an organizer of' : 'a checkiner for' %> this event!
+
+    <div class="header-actions">
+      <% if @organizer %>
+        <%= link_to 'Edit', edit_event_path(@event), class: "btn fa-before fa-edit" %>
+        <%= link_to 'Organizer Console', event_organizer_tools_path(@event), class: "btn fa-before fa-bullhorn" %>
+      <% elsif @checkiner %>
+        <%= link_to 'Checkin Console', event_event_sessions_path(@event), class: "btn" %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
 <div class="row">
   <div class="col-md-8">
     <div class="critical-details">
@@ -48,20 +63,6 @@
         <% end %>
       <% end %>
     </div>
-
-    <% links = [] %>
-
-    <% if @organizer %>
-      <% links << ['Edit', edit_event_path(@event), 'fa-before fa-edit'] %>
-      <% links << ['Organizer Console', event_organizer_tools_path(@event), 'fa-before fa-bullhorn'] %>
-    <% elsif @checkiner %>
-      <% links << ['Checkin Console', event_event_sessions_path(@event)] %>
-    <% end %>
-
-    <% links << ['Back', events_path] %>
-
-    <%= render 'shared/actions', links: links %>
-
   </div>
   <div class="col-md-4">
 
@@ -97,27 +98,27 @@
         <% end %>
       </ul>
     </div>
-    <h3><%= pluralize(@event.checked_in_volunteer_rsvps.count, "volunteer") %>!</h3>
+    <h3><%= pluralize(@event.checked_in_rsvps(Role::VOLUNTEER).count, "volunteer") %>!</h3>
     <% if @event.volunteer_rsvps.none? %>
       <div class="mb20">
         No volunteers are currently signed up for this event.
       </div>
     <% else %>
       <ul class="attendees">
-        <% @event.ordered_volunteer_rsvps.each do |rsvp| %>
+        <% @event.ordered_rsvps(Role::VOLUNTEER).each do |rsvp| %>
           <li class='attendee'><%= render 'shared/viewed_gravatars', :email => rsvp.loaded_user.email %><%= link_to rsvp.loaded_user.full_name, rsvp.loaded_user.profile_path, class: rsvp_class(rsvp) %></li>
         <% end %>
       </ul>
     <% end %>
     <% if @event.allow_student_rsvp? %>
-      <h3><%= pluralize(@event.checked_in_student_rsvps.count, "student") %>!</h3>
+      <h3><%= pluralize(@event.checked_in_rsvps(Role::STUDENT).count, "student") %>!</h3>
       <% if @event.student_rsvps.none? %>
         <div class="mb20">
           No students are currently signed up for this event.
         </div>
       <% else %>
         <ul class="attendees">
-          <% @event.ordered_student_rsvps.each do |rsvp| %>
+          <% @event.ordered_rsvps(Role::STUDENT).each do |rsvp| %>
             <li class='attendee'><%= render 'shared/viewed_gravatars', email: rsvp.loaded_user.email %><%= link_to rsvp.loaded_user.full_name, rsvp.loaded_user.profile_path, class: rsvp_class(rsvp) %></li>
           <% end %>
         </ul>

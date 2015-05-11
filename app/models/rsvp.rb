@@ -45,6 +45,10 @@ class Rsvp < ActiveRecord::Base
       for_students.validates_presence_of :operating_system_id, :class_level
       for_students.validates_inclusion_of :class_level, in: (1..5), allow_blank: true
     end
+
+    normal_event.with_options(if: :requires_session_rsvp?) do |attendee_rsvp|
+      attendee_rsvp.validates :rsvp_sessions, length: { minimum: 1, message: 'must be selected' }
+    end
   end
 
   extend ActiveHash::Associations::ActiveRecordExtensions
@@ -78,10 +82,9 @@ class Rsvp < ActiveRecord::Base
     prior_rsvps = user.rsvps.includes(:event).order('events.ends_at')
 
     last_rsvp = prior_rsvps.where('events.course_id = ?', event.course_id).last || prior_rsvps.last
-
-    new_attributes = last_rsvp ? last_rsvp.carryover_attributes(event.course_id, role) : {}
-
-    assign_attributes(new_attributes)
+    if last_rsvp
+      assign_attributes(last_rsvp.carryover_attributes(event.course_id, role))
+    end
   end
 
   def selectable_sessions
@@ -90,6 +93,8 @@ class Rsvp < ActiveRecord::Base
       sessions
     elsif role == Role::STUDENT
       sessions.where(volunteers_only: false)
+    else
+      raise "No selectable_sessions for Role::#{role.name}"
     end
   end
 
@@ -101,11 +106,25 @@ class Rsvp < ActiveRecord::Base
     operating_system.try(:type)
   end
 
+  def full_dietary_info
+    restrictions = dietary_restrictions.map { |dr| dr.restriction.capitalize }
+    restrictions << dietary_info if dietary_info.present?
+    restrictions.join(', ')
+  end
+
   def no_show?
     return false if event.historical?
     return false if event.upcoming?
 
     checkins_count == 0
+  end
+
+  def checked_in_session_ids
+    if role == Role::ORGANIZER
+      event.event_sessions.map(&:id)
+    else
+      rsvp_sessions.where(checked_in: true).pluck(:event_session_id)
+    end
   end
 
   def role_volunteer?
@@ -118,6 +137,11 @@ class Rsvp < ActiveRecord::Base
 
   def teaching_or_taing?
     teaching || taing
+  end
+
+  def requires_session_rsvp?
+    return false if role == Role::ORGANIZER
+    event.try(:upcoming?)
   end
 
   def volunteer_preference_id
@@ -191,9 +215,8 @@ class Rsvp < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = {
-      methods: [:full_name, :operating_system_title, :operating_system_type]
-    }.merge(options)
+    options[:methods] ||= []
+    options[:methods] |= [:full_name, :operating_system_title, :operating_system_type]
     super(options)
   end
 end

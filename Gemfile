@@ -25,6 +25,7 @@ gem 'simple_form'
 gem 'rack-canonical-host'
 gem 'icalendar'
 gem 'overcommit'
+gem 'pg' if ENV['FORCE_POSTGRES']
 
 group :production do
   gem 'pg'
